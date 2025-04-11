@@ -34,11 +34,14 @@ export default function Kambaz() {
     
 
     const updateEnrollment = async (courseId: string, enrolled: boolean) => {
+      if (!currentUser) return;
+      
       if (enrolled) {
         await userClient.enrollIntoCourse(currentUser._id, courseId);
       } else {
         await userClient.unenrollFromCourse(currentUser._id, courseId);
       }
+      
       setCourses(
         courses.map((course) => {
           if (course._id === courseId) {
@@ -57,8 +60,12 @@ export default function Kambaz() {
           const enrolledCourses = await userClient.findCoursesForUser(
             currentUser._id
           );
+          
+          // Add defensive checks
+          const validEnrolledCourses = enrolledCourses.filter((c: any) => c && c._id);
+          
           const courses = allCourses.map((course: any) => {
-            if (enrolledCourses.find((c: any) => c._id === course._id)) {
+            if (course && validEnrolledCourses.some((c: any) => c._id === course._id)) {
               return { ...course, enrolled: true };
             } else {
               return course;
@@ -109,9 +116,13 @@ export default function Kambaz() {
     
     // Delete course
     const deleteCourse = async (courseId: string) => {
-      const status = await courseClient.deleteCourse(courseId);
-      setCourses(courses.filter((course) => course._id !== courseId));
-      console.log(status)
+      try {
+        const status = await courseClient.deleteCourse(courseId);
+        setCourses(courses.filter((course) => course && course._id !== courseId));
+        console.log(status);
+      } catch (error) {
+        console.error("Error deleting course:", error);
+      }
     };
 
     // Update course

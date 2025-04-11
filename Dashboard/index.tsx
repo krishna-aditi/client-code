@@ -71,12 +71,14 @@ export default function Dashboard(
     //     ...
     // }
 
-    const displayedCourses = () =>{
-        if (isFaculty){
+    const displayedCourses = () => {
+        if (!currentUser) return [];
+        
+        if (isFaculty) {
             return allCourses;
         }
-
-        if (showEnrolledOnly){
+    
+        if (showEnrolledOnly) {
             return allCourses.filter(course =>
                     enrollments.some((enrollment: any) => 
                         enrollment.user === currentUser._id && enrollment.course === course._id));
@@ -85,16 +87,17 @@ export default function Dashboard(
         }
     };
 
-    const enrollmentStatus = allCourses.reduce((status, course) => { 
-        status[course._id] = Array.isArray(enrollments) && currentUser && enrollments.some(
+    const enrollmentStatus = currentUser ? allCourses.reduce((status, course) => { 
+        status[course._id] = Array.isArray(enrollments) && enrollments.some(
             (enrollment: any) =>
                 enrollment.user === currentUser._id && enrollment.course === course._id
         );
         return status;
-    }, {});
+    }, {}) : {};
 
     // Add / Enroll user to course
     const handleAddEnrollment = async (courseId: string) => {
+        if (!currentUser) return;
         try {
             await enrollmentsClient.enrollUser(currentUser._id, courseId); 
             dispatch(addEnrollment({ user: currentUser._id, course: courseId })); 
@@ -105,6 +108,7 @@ export default function Dashboard(
     
     // Delete / Unenroll user from course
     const handleDeleteEnrollment = async (courseId: string) => {
+        if (!currentUser) return;
         try {
             await enrollmentsClient.unenrollUser(currentUser._id, courseId);
             dispatch(deleteEnrollment({ user: currentUser._id, course: courseId })); 
@@ -117,6 +121,7 @@ export default function Dashboard(
     // if isEnrolled is true and user clicks on unenroll --> isEnrolled turns false and enrollmentStatus of the course is updated 
     // if isEnrolled is false and user clicks on enroll --> isEnrolled turns true and enrollmentStatus of the course is updated
     const toggleEnrollment = (courseId: string) => {
+        if (!currentUser) return;
         const isEnrolled = enrollmentStatus[courseId];
         if (isEnrolled) {
             handleDeleteEnrollment(courseId);
@@ -171,10 +176,10 @@ export default function Dashboard(
             </StudentProtectedRoute>
 
             <h2 id="wd-dashboard-published">
-            {enrolling 
-                ? `All Courses (${courses.length})`
-                : `My Courses (${courses.filter(course => course && course.enrolled === true).length})`
-            }
+                {enrolling 
+                    ? `All Courses (${courses.length})`
+                    : `My Courses (${displayedCourses().length})`
+                }
             </h2>
             <hr />
 
@@ -191,9 +196,8 @@ export default function Dashboard(
                     //     )
                     // ) */}
                     {/* {coursesToDisplay       */}
-                    {courses          
-                    .map((course) => (
-                        <Col key={course._id} className="wd-dashboard-course" style={{ width: "300px" }}>
+                    {courses.filter(course => course != null).map((course) => (
+                            <Col key={course._id} className="wd-dashboard-course" style={{ width: "300px" }}>
                         <Card>
                             <Link to={enrollmentStatus[course._id] ? `/Kambaz/Courses/${course._id}/Home`: "#"} // navigate to course only when enrolled
                                 className="wd-dashboard-course-link text-decoration-none text-dark" >
