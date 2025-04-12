@@ -165,20 +165,20 @@ export default function Dashboard(
                 <hr />
             </FacultyProtectedRoute>
 
-            <StudentProtectedRoute>
-                {/* Enrollment button */}
+            {/* Enrollment button */}
+            {/* showEnrolledOnly is initialized with False, so the button will show "Show Enrolled Courses" in the beginning */}
+            {/* <StudentProtectedRoute>
                 <Button className="btn-primary float-end" 
                     id="wd-enrollment-btn"
                     onClick={toggleEnrollmentView}>
-                        {/* showEnrolledOnly is initialized with False, so the button will show "Show Enrolled Courses" in the beginning */}
                         {showEnrolledOnly ? "Show All Courses" : "Show Enrolled Courses"}  
                 </Button>
-            </StudentProtectedRoute>
+            </StudentProtectedRoute> */}
 
             <h2 id="wd-dashboard-published">
                 {enrolling 
                     ? `All Courses (${courses.length})`
-                    : `My Courses (${displayedCourses().length})`
+                    : `My Courses (${courses.length})`
                 }
             </h2>
             <hr />
@@ -204,7 +204,8 @@ export default function Dashboard(
                             <Card.Img src="/images/reactjs.jpg" variant="top" width="100%" height={160} />
                             
                             <Card.Body className="card-body">
-                                <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">
+                                <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden d-flex justify-content-between align-items-center">
+                                <div className="text-truncate me-2 float-start">{course.name}</div>
                                     {enrolling && (
                                         <Button onClick={(event) => {
                                                 event.preventDefault();
@@ -214,7 +215,6 @@ export default function Dashboard(
                                                 {course.enrolled ? "Unenroll" : "Enroll"}
                                         </Button>
                                     )}
-                                    {course.name} 
                                 </Card.Title>
                                 <Card.Text className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
                                 {course.description} </Card.Text>
@@ -242,7 +242,7 @@ export default function Dashboard(
                                 </FacultyProtectedRoute>
                                 
                                 {/* Enrollment button in course card */}
-                                <StudentProtectedRoute> 
+                                {/* <StudentProtectedRoute> 
                                     <Button id="wd-enroll-btn"
                                         onClick={(event) => {
                                         event.preventDefault();
@@ -252,7 +252,7 @@ export default function Dashboard(
                                         className={`btn float-end ${enrollmentStatus[course._id] ? "btn-danger" : "btn-success"}`}>
                                         {enrollmentStatus[course._id] ? "Unenroll" : "Enroll"}
                                     </Button>
-                                </StudentProtectedRoute>
+                                </StudentProtectedRoute> */}
 
                             </Card.Body>
                             </Link>

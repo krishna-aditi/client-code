@@ -1,6 +1,7 @@
 import { Table } from "react-bootstrap";
 import { FaUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
+// import * as courseClient from "../client";
 // import { useParams } from "react-router-dom";
 // import * as db from "../../Database";
 import PeopleDetails from "./Details";
