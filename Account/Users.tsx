@@ -22,6 +22,7 @@ export default function Users() {
 
     // Filter users by partial name
     const [name, setName] = useState("");
+    console.log(name);
     const filterUsersByName = async (name: string) => {
         setName(name);
         if (name) {

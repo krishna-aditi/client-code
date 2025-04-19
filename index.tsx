@@ -21,17 +21,36 @@ export default function Kambaz() {
     const [enrolling, setEnrolling] = useState<boolean>(false);
 
     // Find enrolled courses for current user 
+    // const findCoursesForUser = async () => {
+    //   try {
+    //     if (currentUser) {
+    //       const courses = await userClient.findCoursesForUser(currentUser._id);
+    //       setCourses(courses);
+    //     }
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // };
+    
     const findCoursesForUser = async () => {
       try {
         if (currentUser) {
-          const courses = await userClient.findCoursesForUser(currentUser._id);
-          setCourses(courses);
+          const fetchedCourses = await userClient.findCoursesForUser(currentUser._id);
+          
+          // Create a new array with enrolled set to true
+          // Using explicit type annotation to fix the error
+          const enrolledCourses = fetchedCourses.map((course: any) => ({
+            ...course,
+            enrolled: true
+          }));
+          
+          // Now set the courses state with the new array
+          setCourses(enrolledCourses);
         }
       } catch (error) {
         console.error(error);
       }
     };
-    
 
     const updateEnrollment = async (courseId: string, enrolled: boolean) => {
       if (!currentUser) return;

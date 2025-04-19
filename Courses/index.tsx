@@ -2,11 +2,21 @@ import CourseNavigation from "./Navigation";
 import Modules from "./Modules";
 import Home from "./Home";
 import Assignments from "./Assignments";
-import Quizzes from "./Quizzes";
+// import Quizzes from "./Quizzes";
 import AssignmentEditor from "./Assignments/Editor";
 import { Navigate, Route, Routes, useParams, useLocation } from "react-router";
 import { FaAlignJustify } from "react-icons/fa6";
-import PeopleTable from "./People/Table";
+// import PeopleTable from "./People/Table";
+import CoursePeople from "./People/EnrolledUsers";
+
+import QuizEditor from "./Quizzes/Editor.tsx";
+import QuizReview from "./Quizzes/QuizPreview/QuizReview";
+import QuizList from "./Quizzes";
+import QuizDetails from "./Quizzes/QuizDetails.tsx";
+import QuizQuestions from "./Quizzes/QuizQuestions";
+import QuizStartScreen from "./Quizzes/QuizPreview/QuizStart.tsx";
+import QuizPreview from "./Quizzes/QuizPreview";
+import QuizSubmission from "./Quizzes/QuizPreview/QuizSubmission.tsx";
 
 export default function Courses({ courses }: { courses: any[]; }) {
     const { cid } = useParams();
@@ -30,9 +40,18 @@ export default function Courses({ courses }: { courses: any[]; }) {
                         <Route path="Modules" element={<Modules />} />
                         <Route path="Assignments" element={<Assignments />} />
                         <Route path="Assignments/:aid" element={<AssignmentEditor />} />
-                        <Route path="Quizzes" element={<Quizzes/>} />
-                        {/* <Route path="Quizzes/:qid" element={<h1>Quizzes</h1>} /> */}
-                        <Route path="People" element={<PeopleTable />} />
+                        <Route path="Quizzes">
+                            <Route index element={<QuizList />} />
+                            <Route path="new" element={<QuizEditor />} />
+                            <Route path=":qid" element={<QuizEditor />} />
+                            <Route path=":qid/details" element={<QuizDetails />} />
+                            <Route path=":qid/questions" element={<QuizQuestions />} />
+                            <Route path=":qid/preview" element={<QuizStartScreen />} />
+                            <Route path=":qid/preview/take" element={<QuizPreview />} />
+                            <Route path=":qid/preview/submitted" element={<QuizSubmission />} />
+                            <Route path=":qid/preview/review" element={<QuizReview />} />
+                        </Route>
+                        <Route path="People" element={<CoursePeople />} />
                     </Routes>
                 </div>
             </div>

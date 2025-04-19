@@ -1,35 +1,36 @@
 import { Row, Col, Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useState, useEffect } from "react";
+// import { useDispatch } from "react-redux";
+// import { useSelector } from "react-redux";
+// import { useState } from "react";
 import FacultyProtectedRoute from "../Account/FacultyProtectedRoute";
-import StudentProtectedRoute from "../Account/StudentProtectedRoute";
-import { setEnrollments, setShowEnrolledOnly, addEnrollment, deleteEnrollment } from "../Enrollments/reducer";
-import * as enrollmentsClient from "../Enrollments/client";
-import * as coursesClient from "../Courses/client";
+// import StudentProtectedRoute from "../Account/StudentProtectedRoute";
+// import { setShowEnrolledOnly, addEnrollment, deleteEnrollment } from "../Enrollments/reducer";
+// import * as enrollmentsClient from "../Enrollments/client";
+// import * as coursesClient from "../Courses/client";
 
 export default function Dashboard(   
-    { courses, course, setCourse, addNewCourse, deleteCourse, updateCourse, enrolling, setEnrolling, updateEnrollment }: 
-    { courses: any[]; 
-        course: any; 
+    { courses, course, setCourse, addNewCourse, deleteCourse, updateCourse, enrolling, setEnrolling, updateEnrollment }:
+    { courses: any[];
+        course: any;
         setCourse: (course: any) => void;
-        addNewCourse: () => void; 
+        addNewCourse: () => void;
         deleteCourse: (course: any) => void;
         updateCourse: () => void;
-        enrolling: boolean; 
+        enrolling: boolean;
         setEnrolling: (enrolling: boolean) => void;
         updateEnrollment: (courseId: string, enrolled: boolean) => void;
     })
     {
-    const { currentUser } = useSelector((state: any) => state.accountReducer);
-    const { enrollments, showEnrolledOnly } = useSelector((state: any) => state.enrollmentReducer);
-    const dispatch = useDispatch();
-    const [allCourses, setAllCourses] = useState(courses);
+    // const { currentUser } = useSelector((state: any) => state.accountReducer);
+    // const { enrollments, showEnrolledOnly } = useSelector((state: any) => state.enrollmentReducer);
+    // const dispatch = useDispatch();
+    // const [allCourses, setAllCourses] = useState(courses);
 
     // isFaculty check
-    const isFaculty = currentUser && currentUser.role === "FACULTY";
-    
-    // const fetchEnrollments = async () => { 
+    // const isFaculty = currentUser && currentUser.role === "FACULTY";
+
+    // const fetchEnrollments = async () => {
     //     if (currentUser && currentUser._id) {
     //         try {
     //             const enrollments = await enrollmentsClient.findEnrollments(currentUser._id);
@@ -60,7 +61,7 @@ export default function Dashboard(
     // }, []);
 
     // This stays the same but will start with showing enrolled only
-    const toggleEnrollmentView = () => { dispatch(setShowEnrolledOnly(!showEnrolledOnly)); setEnrolling(!enrolling); };
+    // const toggleEnrollmentView = () => { dispatch(setShowEnrolledOnly(!showEnrolledOnly)); setEnrolling(!enrolling); };
 
     // Enrollment status of each course --> for each course, check whether current user is enrolled
     // status object with the following view
@@ -71,72 +72,72 @@ export default function Dashboard(
     //     ...
     // }
 
-    const displayedCourses = () => {
-        if (!currentUser) return [];
-        
-        if (isFaculty) {
-            return allCourses;
-        }
-    
-        if (showEnrolledOnly) {
-            return allCourses.filter(course =>
-                    enrollments.some((enrollment: any) => 
-                        enrollment.user === currentUser._id && enrollment.course === course._id));
-        } else {
-            return allCourses;
-        }
-    };
+    // const displayedCourses = () => {
+    //     if (!currentUser) return [];
 
-    const enrollmentStatus = currentUser ? allCourses.reduce((status, course) => { 
-        status[course._id] = Array.isArray(enrollments) && enrollments.some(
-            (enrollment: any) =>
-                enrollment.user === currentUser._id && enrollment.course === course._id
-        );
-        return status;
-    }, {}) : {};
+    //     if (isFaculty) {
+    //         return allCourses;
+    //     }
+
+    //     if (showEnrolledOnly) {
+    //         return allCourses.filter(course =>
+    //                 enrollments.some((enrollment: any) =>
+    //                     enrollment.user === currentUser._id && enrollment.course === course._id));
+    //     } else {
+    //         return allCourses;
+    //     }
+    // };
+
+    // const enrollmentStatus = currentUser ? allCourses.reduce((status, course) => {
+    //     status[course._id] = Array.isArray(enrollments) && enrollments.some(
+    //         (enrollment: any) =>
+    //             enrollment.user === currentUser._id && enrollment.course === course._id
+    //     );
+    //     return status;
+    // }, {}) : {};
 
     // Add / Enroll user to course
-    const handleAddEnrollment = async (courseId: string) => {
-        if (!currentUser) return;
-        try {
-            await enrollmentsClient.enrollUser(currentUser._id, courseId); 
-            dispatch(addEnrollment({ user: currentUser._id, course: courseId })); 
-        } catch (error) {
-            console.error("Error enrolling user:", error);
-        }
-    }
+    // const handleAddEnrollment = async (courseId: string) => {
+    //     if (!currentUser) return;
+    //     try {
+    //         await enrollmentsClient.enrollUser(currentUser._id, courseId);
+    //         dispatch(addEnrollment({ user: currentUser._id, course: courseId }));
+    //     } catch (error) {
+    //         console.error("Error enrolling user:", error);
+    //     }
+    // }
     
     // Delete / Unenroll user from course
-    const handleDeleteEnrollment = async (courseId: string) => {
-        if (!currentUser) return;
-        try {
-            await enrollmentsClient.unenrollUser(currentUser._id, courseId);
-            dispatch(deleteEnrollment({ user: currentUser._id, course: courseId })); 
-        } catch (error) {
-            console.error("Error unenrolling user:", error);
-        }
-    }
+    // const handleDeleteEnrollment = async (courseId: string) => {
+    //     if (!currentUser) return;
+    //     try {
+    //         await enrollmentsClient.unenrollUser(currentUser._id, courseId);
+    //         dispatch(deleteEnrollment({ user: currentUser._id, course: courseId }));
+    //     } catch (error) {
+    //         console.error("Error unenrolling user:", error);
+    //     }
+    // }
 
     // Toggle enrollment of a course
     // if isEnrolled is true and user clicks on unenroll --> isEnrolled turns false and enrollmentStatus of the course is updated 
     // if isEnrolled is false and user clicks on enroll --> isEnrolled turns true and enrollmentStatus of the course is updated
-    const toggleEnrollment = (courseId: string) => {
-        if (!currentUser) return;
-        const isEnrolled = enrollmentStatus[courseId];
-        if (isEnrolled) {
-            handleDeleteEnrollment(courseId);
-        } else {
-            handleAddEnrollment(courseId);
-        }
-    };
+    // const toggleEnrollment = (courseId: string) => {
+    //     if (!currentUser) return;
+    //     const isEnrolled = enrollmentStatus[courseId];
+    //     if (isEnrolled) {
+    //         handleDeleteEnrollment(courseId);
+    //     } else {
+    //         handleAddEnrollment(courseId);
+    //     }
+    // };
 
-    const coursesToDisplay = displayedCourses();
+    // const coursesToDisplay = displayedCourses();
 
     return (
         <div id="wd-dashboard">
             <h1 id="wd-dashboard-title">
                 Dashboard
-                <button onClick={() => setEnrolling(!enrolling)} 
+                <button onClick={() => setEnrolling(!enrolling)}
                     className="float-end btn btn-primary" >
                     {enrolling ? "My Courses" : "All Courses"}
                 </button>
@@ -168,17 +169,23 @@ export default function Dashboard(
             {/* Enrollment button */}
             {/* showEnrolledOnly is initialized with False, so the button will show "Show Enrolled Courses" in the beginning */}
             {/* <StudentProtectedRoute>
-                <Button className="btn-primary float-end" 
+                <Button className="btn-primary float-end"
                     id="wd-enrollment-btn"
                     onClick={toggleEnrollmentView}>
                         {showEnrolledOnly ? "Show All Courses" : "Show Enrolled Courses"}  
                 </Button>
             </StudentProtectedRoute> */}
 
-            <h2 id="wd-dashboard-published">
-                {enrolling 
+            {/* <h2 id="wd-dashboard-published">
+                {enrolling
                     ? `All Courses (${courses.length})`
                     : `My Courses (${courses.length})`
+                }
+            </h2> */}
+            <h2 id="wd-dashboard-published">
+                {enrolling
+                    ? `All Courses (${courses.filter(course => course != null && course._id && course.name).length})`
+                    : `My Courses (${courses.filter(course => course != null && course._id && course.name).length})`
                 }
             </h2>
             <hr />
@@ -196,13 +203,18 @@ export default function Dashboard(
                     //     )
                     // ) */}
                     {/* {coursesToDisplay       */}
-                    {courses.filter(course => course != null).map((course) => (
+                    {courses.filter(course => course != null &&
+                        course._id &&
+                        course.name &&
+                        typeof course.name === 'string'
+                    ).map((course) => (
                             <Col key={course._id} className="wd-dashboard-course" style={{ width: "300px" }}>
                         <Card>
-                            <Link to={enrollmentStatus[course._id] ? `/Kambaz/Courses/${course._id}/Home`: "#"} // navigate to course only when enrolled
+                            {/* <Link to={enrollmentStatus[course._id] ? `/Kambaz/Courses/${course._id}/Home`: "#"} // navigate to course only when enrolled */}
+                            <Link to={course.enrolled ? `/Kambaz/Courses/${course._id}/Home`: "#"} // navigate to course only when enrolled
                                 className="wd-dashboard-course-link text-decoration-none text-dark" >
                             <Card.Img src="/images/reactjs.jpg" variant="top" width="100%" height={160} />
-                            
+
                             <Card.Body className="card-body">
                                 <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden d-flex justify-content-between align-items-center">
                                 <div className="text-truncate me-2 float-start">{course.name}</div>
@@ -242,12 +254,12 @@ export default function Dashboard(
                                 </FacultyProtectedRoute>
                                 
                                 {/* Enrollment button in course card */}
-                                {/* <StudentProtectedRoute> 
+                                {/* <StudentProtectedRoute>
                                     <Button id="wd-enroll-btn"
                                         onClick={(event) => {
                                         event.preventDefault();
                                         toggleEnrollment(course._id);
-                                        }} 
+                                        }}
                                         // Button colors --> red for unenroll, green for enroll
                                         className={`btn float-end ${enrollmentStatus[course._id] ? "btn-danger" : "btn-success"}`}>
                                         {enrollmentStatus[course._id] ? "Unenroll" : "Enroll"}
